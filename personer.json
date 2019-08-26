@@ -1,0 +1,31 @@
+[
+    {
+        "navn": "Peter",
+        "alder": 15,
+        "hold": "B"
+            },
+    {
+        "navn": "Alan",
+        "alder": 50,
+        "hold": "A",
+        "billede": "http://ale-kea.dk/images/alan.jpg",
+        "email": "ale@kea.dk"
+            },
+    {
+        "navn": "Kamilla",
+        "alder": 17,
+        "hold": "A"
+            },
+    {
+        "navn": "Martin",
+        "alder": 10,
+        "hold": "B",
+        "billede": "http://mabe-kea.dk/martin.jpg",
+        "email": "mabe@kea.dk"
+            },
+    {
+        "navn": "Klaus",
+        "alder": 19,
+        "hold": "B"
+            }
+]

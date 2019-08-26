@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>t</title>
+    <style>
+        body {
+            max-width: 960px;
+            margin: auto;
+            padding: 1em;
+        }
+
+        section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+            grid-gap: .5em;
+        }
+
+        article {
+            border: 1px solid;
+            padding: 1em;
+        }
+
+        .aktiv{
+            background-color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Medlemmer</h1>
+    <nav>
+        <button data-hold="alle" class="fltbtn aktiv">Alle</button>
+        <button data-hold="A" class="fltbtn">Hold A</button>
+        <button data-hold="B" class="fltbtn">Hold B</button>
+        <p>Sorter</p>
+        <button data-sort="navn" class="sortbtn">Navn</button>
+        <button data-sort="alder" class="sortbtn">Alder</button>
+    </nav>
+    <main>
+        <h2></h2>
+        <section></section>
+    </main>
+    <script>
+        const HEADER = document.querySelector("main h2");
+        const SECTION = document.querySelector("section");
+        const FLTBTNS = document.querySelectorAll(".fltbtn");
+        const SORTBTNS = document.querySelectorAll(".sortbtn");
+        let filter = "alle";
+        let hold = "Alle";
+        let sort = "forekomst";
+        let data;
+
+        FLTBTNS.forEach(btn => btn.addEventListener("click", filtrer));
+        SORTBTNS.forEach(btn => btn.addEventListener("click", sorter));
+
+        async function hentData(){
+            const RESPONSE = await fetch("personer.json");
+            const DATA = await RESPONSE.json();
+            data = DATA;
+            console.log(data)
+            visListe(data);
+        }
+
+        function filtrer() {
+            filter = this.getAttribute("data-hold");
+            hold = this.textContent;
+            visListe(data);
+        }
+
+        function sorter() {
+            sort = this.getAttribute("data-sort");
+            visListe(data);
+        }
+
+
+        function visListe(data) {
+            HEADER.textContent = `${hold} sorteret efter ${sort}`;
+            SECTION.textContent = "";
+            if (sort == "navn") {
+                data.sort((a, b) => a.navn.localeCompare(b.navn));
+            } else if (sort == "alder") {
+                data.sort((a, b) => a.alder - b.alder);
+            }
+            data.forEach(person => {
+                if (filter == "alle" || person.hold == filter) {
+                    SECTION.innerHTML += `
+                        <article>
+                            <h2>${person.navn}</h2>
+                            <p>Alder: ${person.alder} år</p>
+                        </article>
+                    `
+                }
+            });
+        }
+
+        hentData()
+
+    </script>
+</body>
+
+</html>
