@@ -9,9 +9,15 @@
             width: 100%;
         }
 
-        #liste {
+        main {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 1em;
+        }
+
+        section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
         }
 
@@ -27,6 +33,7 @@
         button {
             margin: .5em;
         }
+
     </style>
 </head>
 
@@ -36,8 +43,19 @@
         <button hold="alle" class="fltbtn aktiv">Alle</button>
         <button hold="a" class="fltbtn">Hold A</button>
         <button hold="b" class="fltbtn">Hold B</button>
+        <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>The sheet</button></a>
     </nav>
-    <section id="liste"></section>
+    <main>
+        <div>
+            <h2>Hold A</h2>
+            <section id="a"></section>
+        </div>
+        <div>
+            <h2>Hold B</h2>
+            <section id="b"></section>
+        </div>
+    </main>
+
     <template>
         <article class="person">
             <h2 class="navn"></h2>
@@ -49,7 +67,8 @@
 
         const sheetID = "1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U";
         const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
-        const listeElm = document.querySelector("#liste");
+        const a = document.querySelector("#a");
+        const b = document.querySelector("#b");
         const skabelon = document.querySelector("template").content;
         const knapper = document.querySelectorAll(".fltbtn");
         let json;
@@ -61,8 +80,8 @@
             sortering = this.getAttribute("hold");
             knapper.forEach(knap => knap.classList.remove("aktiv"));
             this.classList.add("aktiv");
-            //vis(json) // sorterer i gemte data
-            loadData() // henter friske data
+            vis(json) // sorterer i gemte data
+            //loadData() // henter friske data
         }
 
         //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
@@ -74,21 +93,27 @@
         }
 
         function vis(data) {
-            listeElm.textContent = "";
+            a.textContent = "";
+            b.textContent = "";
             data.feed.entry.forEach(person => {
                 console.log(sortering)
                 if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
-                    console.log(person.gsx$hold.$t.toLowerCase())
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
-                    const hold = person.gsx$hold.$t;
+                    const hold = person.gsx$hold.$t.toLowerCase();
                     const billede = person.gsx$billede.$t;
                     klon.querySelector(".navn").textContent = navn;
                     klon.querySelector(".navn").textContent += " " + hold;
-                    klon.querySelector(".profil-billede").src = billede;
-                    listeElm.appendChild(klon);
+                    //klon.querySelector(".profil-billede").src = billede;
+                    if (hold) {
+                        const parent = document.querySelector("#" + hold);
+                        parent.appendChild(klon);
+                    }
                 }
             })
         }
+
     </script>
-</body></html>
+</body>
+
+</html>
