@@ -20,11 +20,23 @@
             border: 1px solid;
         }
 
+        .aktiv {
+            color: red;
+        }
+
+        button {
+            margin: .5em;
+        }
     </style>
 </head>
 
 <body>
     <h1>MMD 2019</h1>
+    <nav>
+        <button hold="alle" class="fltbtn aktiv">Alle</button>
+        <button hold="a" class="fltbtn">Hold A</button>
+        <button hold="b" class="fltbtn">Hold B</button>
+    </nav>
     <section id="liste"></section>
     <template>
         <article class="person">
@@ -39,32 +51,44 @@
         const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
         const listeElm = document.querySelector("#liste");
         const skabelon = document.querySelector("template").content;
-        let sort = "alle";
+        const knapper = document.querySelectorAll(".fltbtn");
+        let json;
+        let sortering = "alle";
+
+        knapper.forEach(knap => knap.addEventListener("click", sorter));
+
+        function sorter() {
+            sortering = this.getAttribute("hold");
+            knapper.forEach(knap => knap.classList.remove("aktiv"));
+            this.classList.add("aktiv");
+            //vis(json) // sorterer i gemte data
+            loadData() // henter friske data
+        }
 
         //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
 
         async function loadData() {
             const response = await fetch(url);
-            const json = await response.json();
+            json = await response.json();
             vis(json);
         }
 
         function vis(data) {
+            listeElm.textContent = "";
             data.feed.entry.forEach(person => {
-                if (person.gsx$hold.$t.toLowerCase() == sort || sort == "alle") {
+                console.log(sortering)
+                if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
+                    console.log(person.gsx$hold.$t.toLowerCase())
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
                     const hold = person.gsx$hold.$t;
                     const billede = person.gsx$billede.$t;
                     klon.querySelector(".navn").textContent = navn;
-                    klon.querySelector(".navn").textContent += " "+hold;
+                    klon.querySelector(".navn").textContent += " " + hold;
                     klon.querySelector(".profil-billede").src = billede;
                     listeElm.appendChild(klon);
                 }
             })
         }
-
     </script>
-</body>
-
-</html>
+</body></html>
