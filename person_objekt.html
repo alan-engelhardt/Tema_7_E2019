@@ -1,33 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
 </head>
+
 <body>
-   <h1>Person</h1>
-   <h2>Navn Hold</h2>
-   <img class="profil-billede">
+    <h1>Personer</h1>
+
+    <template>
+        <article>
+            <h2>Navn Hold</h2>
+            <img class="profil-billede">
+        </article>
+    </template>
+
+    <section id="person-liste"></section>
 
     <script>
-        const person = {
-            navn: "Martin",
-            hold: "b",
-            højde: 170,
-            hårfarve: "sølv",
-            billede: "https://kvikea.dk/pix1.jpg",
-            thumb: "https://kvikea.dk/pix2.jpg"
-        }
+        const skabelon = document.querySelector("template").content;
+        const listeElm = document.querySelector("#person-liste");
 
-        const h2 = document.querySelector("h2");
-        h2.textContent = person.navn;
-        h2.textContent += " Hold " + person.hold;
-        const img = document.querySelector("img");
-        img.src = person.thumb;
-        img.alt = "Billede af Kamilla";
+        console.log(skabelon)
+
+        const array = [{
+                "navn": "Martin",
+                "hold": "a",
+                "højde": 180,
+                "hårfarve": "blå",
+                billede: "martin.jpg",
+                thumb: "martin-l.jpg"
+            },
+            {
+                "navn": "Kamilla",
+                "hold": "b",
+                "højde": 170,
+                hårfarve: "sølv",
+                billede: "https://kvikea.dk/pix1.jpg",
+                thumb: "https://kvikea.dk/pix2.jpg"
+            },
+            {
+                "navn": "Alan",
+                "hold": "b",
+                "højde": 170,
+                hårfarve: "rød",
+                billede: "https://ale-kea.dk/images/alan1.jpg",
+                thumb: "http://ale-kea.dk/images/alan_thumb.JPG"
+            }
+        ]
+
+        array.forEach(person => {
+            const klon = skabelon.cloneNode(true);
+            console.log(klon);
+            const h2 = klon.querySelector("h2");
+            h2.textContent = person.navn;
+            h2.textContent += " Hold " + person.hold;
+            const img = klon.querySelector("img");
+            img.src = person.thumb;
+            img.alt = "Billede af " + person.navn;
+            listeElm.appendChild(klon);
+        })
 
 
-        console.log(person.billede, person.navn);
+
+
+
+
+
+
+
+
     </script>
 </body>
+
 </html>
