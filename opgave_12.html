@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>opgasve 12</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <p>Gæt mit tal mellem 0 og 20</p>
+    <input type="number" id="gæt">
+    <button>Gæt!</button>
+    <button id="nyt_spil">Nyt Spil</button>
+
+    <script>
+        let tal = Math.round(Math.random() * 20);
+        // console.log(tal);
+        let guess;
+        let antal = 1;
+
+        document.querySelector("button").addEventListener("click", guessTal);
+        document.querySelector("#nyt_spil").addEventListener("click", nytSpil);
+        document.querySelector("#nyt_spil").style.visibility = "hidden";
+
+        function guessTal() {
+            guess = document.querySelector("#gæt").value;
+            if (guess == tal) {
+                console.log("Rigtigt\ndu prøvede " + antal + " gange");
+                document.querySelector("#nyt_spil").style.visibility = "visible";
+                document.querySelector("button").style.visibility = "hidden";
+            } else if (tal > guess) {
+                console.log("for lavt - prøv igen!");
+                antal++;
+            } else {
+                console.log("for højt - prøv igen");
+                antal++;
+            }
+        }
+
+        function nytSpil() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

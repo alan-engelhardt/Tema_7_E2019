@@ -22,10 +22,13 @@
             padding: 1em;
         }
 
-        .aktiv{
+        .aktiv {
             background-color: red;
         }
-
+        .pb{
+            width: 200px;
+            border-radius: 10%;
+        }
     </style>
 </head>
 
@@ -56,7 +59,7 @@
         FLTBTNS.forEach(btn => btn.addEventListener("click", filtrer));
         SORTBTNS.forEach(btn => btn.addEventListener("click", sorter));
 
-        async function hentData(){
+        async function hentData() {
             const RESPONSE = await fetch("personer.json");
             const DATA = await RESPONSE.json();
             data = DATA;
@@ -90,15 +93,12 @@
                         <article>
                             <h2>${person.navn}</h2>
                             <p>Alder: ${person.alder} år</p>
-                        </article>
-                    `
+                            <img src="${person.billede}" class="pb">
+                        </article>`;
                 }
             });
         }
 
         hentData()
-
     </script>
-</body>
-
-</html>
+</body></html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    Indtast længde <input type="number" id="længde">
+    Indtast bredde <input type="number" id="bredde">
+    <button>Udregn areal</button>
+
+    <script>
+        const længde = document.querySelector("#længde");
+        const bredde = document.querySelector("#bredde");
+        document.querySelector("button").addEventListener("click", button_clicked);
+
+        function button_clicked() {
+            const l = længde.value
+            const b = bredde.value
+            beregn(l, b);
+        }
+
+        function beregn(l, b){
+           if(l*b<=0){
+               console.log("forkert input");
+           }else{
+               console.log(l*b);
+           }
+        }
+
+    </script>
+</body>
+
+</html>

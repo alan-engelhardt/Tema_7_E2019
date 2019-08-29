@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <!--  Øvelse 10  -->
+    <p>Hvor mange timer har du fløjet?</p>
+    Indtast timer <input type="number" id="timer">
+    <button>Giv mig dommen!</button>
+
+    <script>
+        //Øvelse 07
+        let time = new Date().getHours();
+
+        //Godmorgen mellem kl. 5 og kl 10,
+        if (time >= 5 && time < 10) {
+            console.log("godmorgen");
+        }
+        //Goddag mellem kl 10 og 18,
+        else if (time < 18) {
+            console.log("goddag");
+        }
+        //Godaften mellem 18 og 24 og
+        else if (time < 24) {
+            console.log("godaften");
+        }
+        //Godnat mellem 24 og 5.
+        else {
+            console.log("godnat");
+        }
+
+        //Øvelse 08
+        let timer = 3;
+        let co2UdledtIKgVedFlyrejse = timer * 109;
+        console.log(`Ved 3 timers flyrejse har du udledt ${co2UdledtIKgVedFlyrejse} kg CO2`);
+
+        //Øvelse 09 (bygger videre på 08)
+        let klimaSynderKommentar;
+
+        if (co2UdledtIKgVedFlyrejse < 100) {
+            klimaSynderKommentar = "Tæt på Thunberg.";
+        } else if (co2UdledtIKgVedFlyrejse < 200) {
+            klimaSynderKommentar = "Ja ja, du behøver ikke at melde dig ud af Å!";
+        } else if (co2UdledtIKgVedFlyrejse < 600) {
+            klimaSynderKommentar = "Det er godt for turismen i nordeuropa.";
+        } else {
+            klimaSynderKommentar = "Nå ja vi kan jo altid kolonisere en anden planet ...";
+        }
+
+        console.log(`Du har fløjet ${timer} timer og udledt ${co2UdledtIKgVedFlyrejse} kg CO2. ${klimaSynderKommentar}`);
+
+        //Øvelse 10 kræver et input felt og en knap i html
+        document.querySelector("button").addEventListener("click", buttonClicked);
+
+        function buttonClicked() {
+            timer = document.querySelector("#timer").value;
+
+            if (isNaN(timer) || timer == "") {
+
+                console.log("Du har ikke tastet et tal ind!");
+
+            } else {
+
+                co2UdledtIKgVedFlyrejse = Math.round(timer * 109);
+
+                if (co2UdledtIKgVedFlyrejse < 100) {
+
+                    klimaSynderKommentar = "Tæt på Thunberg.";
+
+                } else if (co2UdledtIKgVedFlyrejse < 200) {
+
+                    klimaSynderKommentar = "Ja ja, du behøver ikke at melde dig ud af Å!";
+
+                } else if (co2UdledtIKgVedFlyrejse < 600) {
+
+                    klimaSynderKommentar = "Det er godt for turismen i nordeuropa.";
+
+                } else {
+
+                    klimaSynderKommentar = "Nå ja vi kan jo altid kolonisere en anden planet ...";
+
+                }
+                console.log(`Du har fløjet ${timer} timer og udledt ${co2UdledtIKgVedFlyrejse} kg CO2. ${klimaSynderKommentar}`);
+            }
+        }
+    </script>
+</body></html>

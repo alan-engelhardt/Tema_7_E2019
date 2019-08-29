@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <h2></h2>
+    <input type="text">
+    <button id="svar">Svar</button>
+    <button id="fortsaet">Fortsæt</button>
+
+    <script>
+        let points = 0;
+        let rounds = 0;
+        const fortsaetBTN = document.querySelector("#fortsaet");
+        const svarBTN = document.querySelector("#svar");
+        const H2Text = document.querySelector("h2");
+        const inputText = document.querySelector("input");
+
+        fortsaetBTN.style.visibility = "hidden";
+        svarBTN.addEventListener("click", svarClicked);
+        fortsaetBTN.addEventListener("click", spoerg);
+
+        if (rounds == 0) {
+            H2Text.textContent = "Hvor mange år har Louise arbejdet på KEA?"
+        }
+
+        function spoerg() {
+            svarBTN.style.visibility = "visible";
+            fortsaetBTN.style.visibility = "hidden";
+            inputText.value = "";
+
+            rounds++;
+            if (rounds == 1) {
+                H2Text.textContent = "Hvor mange semestre er der på MMD?"
+            } else if (rounds == 2) {
+                H2Text.textContent = "Hvad hedder vores uddannelsesleder til fornavn?";
+            } else if (rounds == 3) {
+                H2Text.textContent = "Hvad hedder Kamilla til efternavn?"
+            } else if (rounds == 4) {
+                H2Text.textContent = "Hvad er Martins skonummer?"
+            } else if (rounds == 5) {
+                H2Text.textContent = "Hvad hedder Klauses hund"
+            } else {
+                H2Text.textContent = `Tillykke du fik ${points} points`
+            }
+        }
+
+        function svarClicked() {
+            console.log("Svar clicked");
+            if (rounds == 0) {
+                if (inputText.value == 2) {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+
+            } else if (rounds == 1) {
+                if (inputText.value == 4) {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+
+            } else if (rounds == 2) {
+                if (inputText.value == "Frederikke") {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+
+            } else if (rounds == 3) {
+                if (inputText.value == "Viktor") {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+
+            } else if (rounds == 4) {
+                if (inputText.value == 45) {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+
+            } else if (rounds == 5) {
+                if (inputText.value == "Freddie") {
+                    H2Text.textContent = "Det var rigtigt, klik \"Fortsæt\"";
+                    points++;
+                } else {
+                    H2Text.textContent = "Det var forkert, klik \"Fortsæt\"";
+                }
+            }
+
+            svarBTN.style.visibility = "hidden";
+            fortsaetBTN.style.visibility = "visible";
+        }
+    </script>
+</body></html>

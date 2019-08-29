@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="indhold">
+        <div class="firkant"><img src='http://helf-kea.dk/test/frog.png' alt='frø'></div>
+        <div class="cirkel"><img src='http://helf-kea.dk/test/gris.png' alt='gris'></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            const firkant = document.querySelector(".firkant");
+            const cirkel = document.querySelector((".cirkel"));
+
+            document.querySelector(".firkant").addEventListener("click", flyt);
+
+            function flyt() {
+                const firkantIndhold = firkant.innerHTML;
+                firkant.innerHTML = cirkel.innerHTML;
+                cirkel.innerHTML = firkantIndhold;
+            }
+
+            document.querySelector(".cirkel").addEventListener("click", stop);
+
+            function stop() {
+                document.querySelector(".firkant").removeEventListener("click", flyt);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

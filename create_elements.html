@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>append</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style class="style">
+        .firkant {
+            background-color: green;
+            height: 200px;
+            width: 200px;
+            padding-top: 80px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .cirkel {
+            background-color: red;
+            height: 200px;
+            width: 200px;
+            border-radius: 200px;
+            text-align: center;
+            padding-top: 80px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="indhold">
+        <div class="firkant"></div>
+        <div class="cirkel"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            const frogImg = document.createElement("img");
+            frogImg.src = "http://helf-kea.dk/test/frog.png";
+            frogImg.alt = "billede af en frø";
+
+            document.querySelector(".firkant").appendChild(frogImg);
+
+            const grisImg = document.createElement("img");
+            grisImg.src = "http://helf-kea.dk/test/gris.png";
+            grisImg.alt = "billede af en gris";
+
+            document.querySelector(".cirkel").appendChild(grisImg);
+
+            const foxImg = document.createElement("img");
+            foxImg.src = "http://mabe-kea.dk/E19/pics/fox.png";
+            foxImg.alt = "billede af en ræv";
+
+            document.querySelector(".cirkel").appendChild(foxImg);
+        }
+    </script>
+
+</body></html>
+
+
+
+
+
+
+
+
+
+
+
+

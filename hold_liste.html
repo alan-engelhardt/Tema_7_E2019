@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        img {
+            width: 100%;
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .person {
+            padding: 1em;
+            border: 1px solid;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>MMD 2019</h1>
+    <section id="liste"></section>
+    <template>
+        <article class="person">
+            <h2 class="navn"></h2>
+            <img src="" alt="" class="profil-billede">
+        </article>
+    </template>
+    <script>
+        //https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0
+        const sheetID = "1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const listeElm = document.querySelector("#liste");
+        const skabelon = document.querySelector("template").content;
+        let sort = "a";
+
+        fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+        async function loadData(url) {
+            const response = await fetch(url);
+            const json = await response.json();
+            vis(json);
+        }
+
+        function vis(data) {
+            data.feed.entry.forEach(person => {
+                if (person.gsx$hold.$t.toLowerCase() == sort || sort == "alle") {
+                    const klon = skabelon.cloneNode(true);
+                    const navn = person.gsx$navn.$t;
+                    const hold = person.gsx$hold.$t;
+                    const billede = person.gsx$billede.$t;
+                    klon.querySelector(".navn").textContent = navn;
+                    klon.querySelector(".navn").textContent += " "+hold;
+                    klon.querySelector(".profil-billede").src = billede;
+                    listeElm.appendChild(klon);
+                }
+            })
+        }
+
+        //loadData(url);
+
+    </script>
+</body>
+
+</html>
