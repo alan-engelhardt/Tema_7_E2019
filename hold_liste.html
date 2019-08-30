@@ -96,7 +96,7 @@
         const skabelon = document.querySelector("template").content;
         const knapper = document.querySelectorAll(".fltbtn");
         const hentDataBtn = document.querySelector("#hentbtn");
-        let json, sortering;
+        let json, sortering, personer;
 
         knapper.forEach(knap => knap.addEventListener("click", sorter));
         hentDataBtn.addEventListener("click", loadData);
@@ -109,6 +109,7 @@
                 main.classList.add("to");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.remove("gem");
+                personer.forEach(person => person.classList.remove("gem"));
             } else if (sortering == "a") {
                 main.classList.remove("to");
                 a.parentElement.classList.remove("gem");
@@ -117,6 +118,30 @@
                 main.classList.remove("to");
                 a.parentElement.classList.add("gem");
                 b.parentElement.classList.remove("gem");
+            } else if (sortering == "k") {
+                main.classList.add("to");
+                a.parentElement.classList.remove("gem");
+                b.parentElement.classList.remove("gem");
+                personer.forEach(person => {
+                    console.log(person);
+                    if (person.getAttribute("data-køn") == "k") {
+                        person.classList.remove("gem");
+                    } else {
+                        person.classList.add("gem");
+                    }
+                });
+            } else if (sortering == "m") {
+                main.classList.add("to");
+                a.parentElement.classList.remove("gem");
+                b.parentElement.classList.remove("gem");
+                personer.forEach(person => {
+                    console.log(person);
+                    if (person.getAttribute("data-køn") == "m") {
+                        person.classList.remove("gem");
+                    } else {
+                        person.classList.add("gem");
+                    }
+                });
             }
         }
 
@@ -138,7 +163,9 @@
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
                     const hold = person.gsx$hold.$t.toLowerCase();
+                    const køn = person.gsx$køn.$t.toLowerCase();
                     const billede = person.gsx$billede.$t;
+                    klon.querySelector(".person").setAttribute("data-køn", køn);
                     klon.querySelector(".navn").textContent = navn;
                     klon.querySelector(".holdet").textContent += hold.toUpperCase();
                     klon.querySelector(".profil-billede").src = billede;
@@ -151,6 +178,7 @@
                     }
                 }
             })
+            personer = document.querySelectorAll(".person");
         }
     </script>
 </body></html>
