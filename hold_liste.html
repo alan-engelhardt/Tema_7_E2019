@@ -5,12 +5,18 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+        body {
+            font-family: sans-serif;
+        }
+
         img {
             width: 100%;
         }
-        nav{
+
+        nav {
             margin: 1em 0;
         }
+
         .to {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -25,7 +31,7 @@
 
         .person {
             padding: 1em;
-            border: 1px solid;
+            border: 1px solid orange;
         }
 
         .aktiv {
@@ -39,19 +45,21 @@
         .gem {
             display: none;
         }
-        div{
+
+        div {
             padding: .5em;
-            border: 1px solid;
+            border: 1px solid blue;
         }
     </style>
 </head>
 
 <body>
-    <h1>MMD 2019</h1>
+    <h1>MMD DK 2019</h1>
     <nav>
         <button hold="alle" class="fltbtn aktiv">Alle</button>
         <button hold="a" class="fltbtn">Hold A</button>
         <button hold="b" class="fltbtn">Hold B</button>
+        <button id="hentbtn">Hent data</button>
         <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>The sheet</button></a>
     </nav>
     <main class="to">
@@ -81,30 +89,17 @@
         const b = document.querySelector("#b");
         const skabelon = document.querySelector("template").content;
         const knapper = document.querySelectorAll(".fltbtn");
+        const hentDataBtn = document.querySelector("#hentbtn");
         let json;
         let sortering = "alle";
 
         knapper.forEach(knap => knap.addEventListener("click", sorter));
+        hentDataBtn.addEventListener("click", loadData);
 
         function sorter() {
             sortering = this.getAttribute("hold");
             knapper.forEach(knap => knap.classList.remove("aktiv"));
             this.classList.add("aktiv");
-            vis(json) // sorterer i gemte data
-            //loadData() // henter friske data
-        }
-
-        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
-
-        async function loadData() {
-            const response = await fetch(url);
-            json = await response.json();
-            vis(json);
-        }
-
-        function vis(data) {
-            a.textContent = "";
-            b.textContent = "";
             if (sortering == "alle") {
                 main.classList.add("to");
                 a.parentElement.classList.remove("gem");
@@ -118,6 +113,20 @@
                 a.parentElement.classList.add("gem");
                 b.parentElement.classList.remove("gem");
             }
+        }
+
+        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+        async function loadData() {
+            a.textContent = "";
+            b.textContent = "";
+            sortering = "alle";
+            const response = await fetch(url);
+            json = await response.json();
+            vis(json);
+        }
+
+        function vis(data) {
             data.feed.entry.forEach(person => {
                 if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
                     const klon = skabelon.cloneNode(true);
@@ -135,8 +144,5 @@
                 }
             })
         }
-
     </script>
-</body>
-
-</html>
+</body></html>
