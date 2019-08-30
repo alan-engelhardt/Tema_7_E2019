@@ -8,11 +8,13 @@
         img {
             width: 100%;
         }
-
-        main {
+        nav{
+            margin: 1em 0;
+        }
+        .to {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-gap: 1em;
+            grid-gap: 2em;
         }
 
         section {
@@ -34,6 +36,13 @@
             margin: .5em;
         }
 
+        .gem {
+            display: none;
+        }
+        div{
+            padding: .5em;
+            border: 1px solid;
+        }
     </style>
 </head>
 
@@ -45,7 +54,7 @@
         <button hold="b" class="fltbtn">Hold B</button>
         <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>The sheet</button></a>
     </nav>
-    <main>
+    <main class="to">
         <div>
             <h2>Hold A</h2>
             <section id="a"></section>
@@ -67,6 +76,7 @@
 
         const sheetID = "1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U";
         const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const main = document.querySelector("main");
         const a = document.querySelector("#a");
         const b = document.querySelector("#b");
         const skabelon = document.querySelector("template").content;
@@ -95,8 +105,20 @@
         function vis(data) {
             a.textContent = "";
             b.textContent = "";
+            if (sortering == "alle") {
+                main.classList.add("to");
+                a.parentElement.classList.remove("gem");
+                b.parentElement.classList.remove("gem");
+            } else if (sortering == "a") {
+                main.classList.remove("to");
+                a.parentElement.classList.remove("gem");
+                b.parentElement.classList.add("gem");
+            } else {
+                main.classList.remove("to");
+                a.parentElement.classList.add("gem");
+                b.parentElement.classList.remove("gem");
+            }
             data.feed.entry.forEach(person => {
-                console.log(sortering)
                 if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
@@ -104,10 +126,11 @@
                     const billede = person.gsx$billede.$t;
                     klon.querySelector(".navn").textContent = navn;
                     klon.querySelector(".navn").textContent += " " + hold;
-                    //klon.querySelector(".profil-billede").src = billede;
-                    if (hold) {
-                        const parent = document.querySelector("#" + hold);
-                        parent.appendChild(klon);
+                    klon.querySelector(".profil-billede").src = billede;
+                    if (hold == "a") {
+                        a.appendChild(klon);
+                    } else if (hold == "b") {
+                        b.appendChild(klon);
                     }
                 }
             })
