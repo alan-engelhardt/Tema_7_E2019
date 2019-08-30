@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+        body{
+            font-family: sans-serif;
+        }
         img {
             width: 100%;
         }
-        nav{
+        nav {
             margin: 1em 0;
         }
         .to {
@@ -16,30 +19,25 @@
             grid-template-columns: 1fr 1fr;
             grid-gap: 2em;
         }
-
         section {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
         }
-
         .person {
             padding: 1em;
             border: 1px solid;
         }
-
         .aktiv {
             color: red;
         }
-
         button {
             margin: .5em;
         }
-
         .gem {
             display: none;
         }
-        div{
+        div {
             padding: .5em;
             border: 1px solid;
         }
@@ -49,10 +47,12 @@
 <body>
     <h1>MMD 2019</h1>
     <nav>
-        <button hold="alle" class="fltbtn aktiv">Alle</button>
-        <button hold="a" class="fltbtn">Hold A</button>
-        <button hold="b" class="fltbtn">Hold B</button>
-        <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>The sheet</button></a>
+        <button data-hold="alle" class="fltbtn aktiv">Alle</button>
+        <button data-hold="a" class="fltbtn">Hold A</button>
+        <button data-hold="b" class="fltbtn">Hold B</button>
+        <button data-hold="k" class="fltbtn">Kvinder</button>
+        <button data-hold="m" class="fltbtn">Mænd</button>
+        <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0" target="_blank"><button>Backend</button></a>
     </nav>
     <main class="to">
         <div>
@@ -67,7 +67,7 @@
 
     <template>
         <article class="person">
-            <h2 class="navn"></h2>
+            <h3 class="navn"></h3>
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
@@ -87,11 +87,14 @@
         knapper.forEach(knap => knap.addEventListener("click", sorter));
 
         function sorter() {
-            sortering = this.getAttribute("hold");
+            sortering = this.getAttribute("data-hold");
             knapper.forEach(knap => knap.classList.remove("aktiv"));
             this.classList.add("aktiv");
             vis(json) // sorterer i gemte data
             //loadData() // henter friske data
+            if(sortering == "k"){
+                //document.querySelectorAll(".m").forEach(article=>article.classList.add("hide"));
+            }
         }
 
         //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
@@ -119,11 +122,13 @@
                 b.parentElement.classList.remove("gem");
             }
             data.feed.entry.forEach(person => {
-                if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
+                const hold = person.gsx$hold.$t.toLowerCase();
+                if (hold == sortering || sortering == "alle") {
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
-                    const hold = person.gsx$hold.$t.toLowerCase();
+                    const køn = person.gsx$køn.$t.toLowerCase();
                     const billede = person.gsx$billede.$t;
+                    klon.querySelector("article").setAttribute("data-koen", køn);
                     klon.querySelector(".navn").textContent = navn;
                     klon.querySelector(".navn").textContent += " " + hold;
                     klon.querySelector(".profil-billede").src = billede;
@@ -131,6 +136,8 @@
                         a.appendChild(klon);
                     } else if (hold == "b") {
                         b.appendChild(klon);
+                    } else {
+                        console.log(navn);
                     }
                 }
             })
