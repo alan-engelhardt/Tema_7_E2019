@@ -31,7 +31,9 @@
 
         .person {
             padding: 1em;
-            border: 1px solid orange;
+            border: 1px solid #ddd;
+            border-radius: 1em;
+            background-color: #fff;
         }
 
         .aktiv {
@@ -48,7 +50,8 @@
 
         div {
             padding: .5em;
-            border: 1px solid blue;
+            background-color: #eee;
+            border-radius: 1em;
         }
     </style>
 </head>
@@ -59,8 +62,10 @@
         <button hold="alle" class="fltbtn aktiv">Alle</button>
         <button hold="a" class="fltbtn">Hold A</button>
         <button hold="b" class="fltbtn">Hold B</button>
+        <button hold="k" class="fltbtn">Kvinder</button>
+        <button hold="m" class="fltbtn">Mænd</button>
         <button id="hentbtn">Hent data</button>
-        <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>The sheet</button></a>
+        <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>Backend</button></a>
     </nav>
     <main class="to">
         <div>
@@ -76,6 +81,7 @@
     <template>
         <article class="person">
             <h2 class="navn"></h2>
+            <p class="holdet">Hold </p>
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
@@ -90,8 +96,7 @@
         const skabelon = document.querySelector("template").content;
         const knapper = document.querySelectorAll(".fltbtn");
         const hentDataBtn = document.querySelector("#hentbtn");
-        let json;
-        let sortering = "alle";
+        let json, sortering;
 
         knapper.forEach(knap => knap.addEventListener("click", sorter));
         hentDataBtn.addEventListener("click", loadData);
@@ -108,7 +113,7 @@
                 main.classList.remove("to");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.add("gem");
-            } else {
+            } else if (sortering == "b") {
                 main.classList.remove("to");
                 a.parentElement.classList.add("gem");
                 b.parentElement.classList.remove("gem");
@@ -127,6 +132,7 @@
         }
 
         function vis(data) {
+            console.log(data);
             data.feed.entry.forEach(person => {
                 if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
                     const klon = skabelon.cloneNode(true);
@@ -134,12 +140,14 @@
                     const hold = person.gsx$hold.$t.toLowerCase();
                     const billede = person.gsx$billede.$t;
                     klon.querySelector(".navn").textContent = navn;
-                    klon.querySelector(".navn").textContent += " " + hold;
+                    klon.querySelector(".holdet").textContent += hold.toUpperCase();
                     klon.querySelector(".profil-billede").src = billede;
                     if (hold == "a") {
                         a.appendChild(klon);
                     } else if (hold == "b") {
                         b.appendChild(klon);
+                    } else {
+                        console.log(navn);
                     }
                 }
             })
