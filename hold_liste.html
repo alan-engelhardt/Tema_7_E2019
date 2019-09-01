@@ -17,13 +17,13 @@
             margin: 1em 0;
         }
 
-        .to {
+        .to-spalter {
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-gap: 2em;
         }
 
-        section {
+        #a, #b {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
@@ -48,7 +48,7 @@
             display: none;
         }
 
-        div {
+        .hold-liste {
             padding: .5em;
             background-color: #eee;
             border-radius: 1em;
@@ -67,15 +67,16 @@
         <button id="hentbtn">Hent data</button>
         <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>Backend</button></a>
     </nav>
-    <main class="to">
-        <div>
+
+    <main class="to-spalter">
+        <section class="hold-liste">
             <h2>Hold A</h2>
             <section id="a"></section>
-        </div>
-        <div>
+        </section>
+        <section class="hold-liste">
             <h2>Hold B</h2>
             <section id="b"></section>
-        </div>
+        </section>
     </main>
 
     <template>
@@ -85,6 +86,7 @@
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
+
     <script>
         document.addEventListener("DOMContentLoaded", loadData);
 
@@ -96,30 +98,30 @@
         const skabelon = document.querySelector("template").content;
         const knapper = document.querySelectorAll(".fltbtn");
         const hentDataBtn = document.querySelector("#hentbtn");
-        let json, sortering, personer;
+        let json, filter, personer;
 
         knapper.forEach(knap => knap.addEventListener("click", sorter));
         hentDataBtn.addEventListener("click", loadData);
 
         function sorter() {
-            sortering = this.getAttribute("hold");
+            filter = this.getAttribute("hold");
             knapper.forEach(knap => knap.classList.remove("aktiv"));
             this.classList.add("aktiv");
-            if (sortering == "alle") {
-                main.classList.add("to");
+            if (filter == "alle") {
+                main.classList.add("to-spalter");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.remove("gem");
                 personer.forEach(person => person.classList.remove("gem"));
-            } else if (sortering == "a") {
-                main.classList.remove("to");
+            } else if (filter == "a") {
+                main.classList.remove("to-spalter");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.add("gem");
-            } else if (sortering == "b") {
-                main.classList.remove("to");
+            } else if (filter == "b") {
+                main.classList.remove("to-spalter");
                 a.parentElement.classList.add("gem");
                 b.parentElement.classList.remove("gem");
-            } else if (sortering == "k") {
-                main.classList.add("to");
+            } else if (filter == "k") {
+                main.classList.add("to-spalter");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.remove("gem");
                 personer.forEach(person => {
@@ -130,8 +132,8 @@
                         person.classList.add("gem");
                     }
                 });
-            } else if (sortering == "m") {
-                main.classList.add("to");
+            } else if (filter == "m") {
+                main.classList.add("to-spalter");
                 a.parentElement.classList.remove("gem");
                 b.parentElement.classList.remove("gem");
                 personer.forEach(person => {
@@ -150,7 +152,7 @@
         async function loadData() {
             a.textContent = "";
             b.textContent = "";
-            sortering = "alle";
+            filter = "alle";
             const response = await fetch(url);
             json = await response.json();
             vis(json);
@@ -159,7 +161,7 @@
         function vis(data) {
             console.log(data);
             data.feed.entry.forEach(person => {
-                if (person.gsx$hold.$t.toLowerCase() == sortering || sortering == "alle") {
+                if (person.gsx$hold.$t.toLowerCase() == filter || filter == "alle") {
                     const klon = skabelon.cloneNode(true);
                     const navn = person.gsx$navn.$t;
                     const hold = person.gsx$hold.$t.toLowerCase();
