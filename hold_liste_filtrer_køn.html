@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        img {
+            width: 100%;
+        }
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .person {
+            padding: 1em;
+            border: 1px solid;
+        }
+        button{
+            margin: .5em;
+            background-color: beige;
+        }
+        .valgt{
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>MMD 2019</h1>
+    <nav>
+        <button data-køn="alle" class="valgt">Alle</button>
+        <button data-køn="k">Kvinder</button>
+        <button data-køn="m">Mænd</button>
+        <button data-køn="andet">Andre</button>
+    </nav>
+    <section id="liste"></section>
+    <template>
+        <article class="person">
+            <h2 class="navn"></h2>
+            <img src="" alt="" class="profil-billede">
+        </article>
+    </template>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadData);
+
+        const sheetID = "1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const listeElm = document.querySelector("#liste");
+        const skabelon = document.querySelector("template").content;
+        const filterKnapper = document.querySelectorAll("button");
+        let data;
+        let filter = "alle";
+
+        filterKnapper.forEach(knap=>knap.addEventListener("click", filtrer));
+
+        function filtrer(){
+            console.log(filter);
+            filter = this.getAttribute("data-køn");
+            filterKnapper.forEach(knap=>knap.classList.remove("valgt"));
+            this.classList.add("valgt");
+            vis(data);
+        }
+
+        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+        async function loadData() {
+            const response = await fetch(url);
+            const json = await response.json();
+            data = json;
+            vis(json);
+        }
+
+        function vis(data) {
+            listeElm.textContent="";
+            data.feed.entry.forEach(person => {
+                //console.log(person.gsx$hold.$t)
+                if (person.gsx$hold.$t == filter || person.gsx$køn.$t == filter || filter == "alle") {
+                    const klon = skabelon.cloneNode(true);
+                    const navn = person.gsx$navn.$t;
+                    const hold = person.gsx$hold.$t;
+                    const billede = person.gsx$billede.$t;
+                    klon.querySelector(".navn").textContent = navn;
+                    klon.querySelector(".navn").textContent += " " + hold;
+                    klon.querySelector(".profil-billede").src = billede;
+                    listeElm.appendChild(klon);
+                }
+            })
+        }
+    </script>
+</body></html>
