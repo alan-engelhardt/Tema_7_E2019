@@ -59,7 +59,7 @@
 
         function filtrer(){
             console.log(filter);
-            filter = this.getAttribute("data-køn");
+            filter = this.dataset.køn;
             h1.textContent = this.textContent;
             filterKnapper.forEach(knap=>knap.classList.remove("valgt"));
             this.classList.add("valgt");
