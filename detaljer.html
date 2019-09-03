@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        img {
+            width: 100%;
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .person {
+            padding: 1em;
+            border: 1px solid;
+        }
+
+        .valgt {
+            background-color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>MMD 2019</h1>
+    <nav>
+        <a href="personliste_med_kommentarer.html"><button>Tilbage</button></a>
+    </nav>
+
+    <section id="liste"></section>
+
+    <template>
+        <article class="person">
+            <h2 class="navn"></h2>
+            <img src="" alt="" class="profil-billede">
+        </article>
+    </template>
+    <script>
+        document.addEventListener("DOMContentLoaded", start);
+
+        const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
+        let person;
+        let github;
+
+
+        // første funktion der kaldes efter DOM er loaded
+        function start() {
+            let urlParams = new URLSearchParams(window.location.search)
+            github = urlParams.get("github");
+            console.log(github);
+            loadData();
+        }
+
+        // funktion der henter data fra Google sheet (via url)
+        async function loadData() {
+            const response = await fetch(url);
+            const personer = await response.json();
+            person = personer.feed.entry.filter(findPerson)[0];
+            vis(); // kald funktionen viser den fundne person
+        }
+
+        function findPerson(p){
+            if(p.gsx$github.$t==github){
+                return p;
+            }
+        }
+
+        //funktion der viser personer i liste view
+        function vis() {
+            console.log(person);
+            const dest = document.querySelector("#liste"); // container til articles med en person
+            const skabelon = document.querySelector("template").content; // select indhold af html skabelon (article)
+            dest.textContent = "";
+            const klon = skabelon.cloneNode(true);
+            klon.querySelector(".navn").textContent = person.gsx$navn.$t;
+            klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
+            klon.querySelector(".profil-billede").src = person.gsx$billede.$t;person.gsx$github.$t;
+            dest.appendChild(klon);
+        }
+
+        function visDetaljer(person) {
+            console.log(person.gsx$navn.$t);
+        }
+
+    </script>
+</body>
+
+</html>
