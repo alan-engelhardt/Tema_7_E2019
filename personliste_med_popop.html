@@ -20,8 +20,30 @@
             border: 1px solid;
         }
 
-        .valgt{
+        .valgt {
             background-color: red;
+        }
+
+        #detaljer {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .8);
+        }
+
+        #detaljer article {
+            background-color: white;
+            margin: 2em 5em;
+        }
+
+        #luk{
+            margin: 1em;
+        }
+
+        .skjul {
+            display: none;
         }
     </style>
 </head>
@@ -43,22 +65,34 @@
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
+
+    <section id="detaljer" class="skjul">
+        <button id="luk">X</button>
+        <article>
+            <h2 class="navn">Navn</h2>
+            <img src="http://ale-kea.dk/images/alan_thumb.JPG" alt="" class="profil-billede">
+        </article>
+    </section>
+
     <script>
         document.addEventListener("DOMContentLoaded", start);
 
         const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
         let personer;
         let filter = "alle";
+        const popop = document.querySelector("#detaljer");
 
         // første funktion der kaldes efter DOM er loaded
         function start() {
-            const filterKnapper = document.querySelectorAll("button");
-            filterKnapper.forEach(knap=>knap.addEventListener("click", filtrerPersoner));
+            const filterKnapper = document.querySelectorAll("nav button");
+            const lukKnap = document.querySelector("#detaljer button");
+            lukKnap.addEventListener("click", skjulPopop);
+            filterKnapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
             loadData();
         }
 
         // funktion der filtrerer personer (json)
-        function filtrerPersoner(){
+        function filtrerPersoner() {
             filter = this.dataset.køn; // sæt variabel "filter" til aktuel værdi
             document.querySelector(".valgt").classList.remove("valgt"); // fjern klassen valgt fra aktuel knap
             this.classList.add("valgt") // marker den nyvalgte knap
@@ -84,10 +118,22 @@
                     klon.querySelector(".navn").textContent = person.gsx$navn.$t;
                     klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
                     klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
-                    klon.querySelector(".person").addEventListener("click", () => location.href = "detaljer.html?github=" + person.gsx$github.$t);
+                    klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
                     dest.appendChild(klon);
                 }
             })
+        }
+
+        function visDetaljer(person) {
+            popop.classList.remove("skjul");
+            console.log(person)
+            popop.querySelector(".navn").textContent = person.gsx$navn.$t;
+            popop.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
+            popop.querySelector(".profil-billede").src = person.gsx$billede.$t;
+        }
+
+        function skjulPopop() {
+            popop.classList.add("skjul");
         }
     </script>
 </body></html>

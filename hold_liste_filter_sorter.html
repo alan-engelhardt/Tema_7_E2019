@@ -5,14 +5,6 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
-<<<<<<< HEAD:hold_liste.html
-        body{
-            font-family: sans-serif;
-        }
-        img {
-            width: 100%;
-        }
-=======
         body {
             font-family: sans-serif;
         }
@@ -21,7 +13,15 @@
             width: 100%;
         }
 
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
+        body {
+            font-family: sans-serif;
+        }
+
+        img {
+            width: 100%;
+        }
+
+
         nav {
             margin: 1em 0;
         }
@@ -31,37 +31,41 @@
             grid-template-columns: 1fr 1fr;
             grid-gap: 2em;
         }
-<<<<<<< HEAD:hold_liste.html
-        section {
-=======
 
-        #a, #b {
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
+
+
+        #a,
+        #b {
+
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
         }
+
         .person {
             padding: 1em;
             border: 1px solid #ddd;
             border-radius: 1em;
             background-color: #fff;
         }
+
         .aktiv {
             color: red;
         }
+
         button {
             margin: .5em;
         }
+
         .gem {
             display: none;
         }
-<<<<<<< HEAD:hold_liste.html
-        div {
-=======
+
+
+
 
         .hold-liste {
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
+
             padding: .5em;
             background-color: #eee;
             border-radius: 1em;
@@ -72,14 +76,13 @@
 <body>
     <h1>MMD DK 2019</h1>
     <nav>
-<<<<<<< HEAD:hold_liste.html
         <button data-hold="alle" class="fltbtn aktiv">Alle</button>
         <button data-hold="a" class="fltbtn">Hold A</button>
         <button data-hold="b" class="fltbtn">Hold B</button>
         <button data-hold="k" class="fltbtn">Kvinder</button>
         <button data-hold="m" class="fltbtn">Mænd</button>
         <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0" target="_blank"><button>Backend</button></a>
-=======
+
         <button hold="alle" class="fltbtn aktiv">Alle</button>
         <button hold="a" class="fltbtn">Hold A</button>
         <button hold="b" class="fltbtn">Hold B</button>
@@ -87,7 +90,7 @@
         <button hold="m" class="fltbtn">Mænd</button>
         <button id="hentbtn">Hent data</button>
         <a href="https://docs.google.com/spreadsheets/d/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/edit#gid=0"><button>Backend</button></a>
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
+
     </nav>
 
     <main class="to-spalter">
@@ -103,12 +106,9 @@
 
     <template>
         <article class="person">
-<<<<<<< HEAD:hold_liste.html
             <h3 class="navn"></h3>
-=======
             <h2 class="navn"></h2>
             <p class="holdet">Hold </p>
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
@@ -130,103 +130,103 @@
         hentDataBtn.addEventListener("click", loadData);
 
         function sorter() {
-<<<<<<< HEAD:hold_liste.html
             sortering = this.getAttribute("data-hold");
             knapper.forEach(knap => knap.classList.remove("aktiv"));
             this.classList.add("aktiv");
             vis(json) // sorterer i gemte data
             //loadData() // henter friske data
-            if(sortering == "k"){
+            if (sortering == "k") {
                 //document.querySelectorAll(".m").forEach(article=>article.classList.add("hide"));
-=======
-            filter = this.getAttribute("hold");
-            knapper.forEach(knap => knap.classList.remove("aktiv"));
-            this.classList.add("aktiv");
-            if (filter == "alle") {
-                main.classList.add("to-spalter");
-                a.parentElement.classList.remove("gem");
-                b.parentElement.classList.remove("gem");
-                personer.forEach(person => person.classList.remove("gem"));
-            } else if (filter == "a") {
-                main.classList.remove("to-spalter");
-                a.parentElement.classList.remove("gem");
-                b.parentElement.classList.add("gem");
-            } else if (filter == "b") {
-                main.classList.remove("to-spalter");
-                a.parentElement.classList.add("gem");
-                b.parentElement.classList.remove("gem");
-            } else if (filter == "k") {
-                main.classList.add("to-spalter");
-                a.parentElement.classList.remove("gem");
-                b.parentElement.classList.remove("gem");
-                personer.forEach(person => {
-                    console.log(person);
-                    if (person.getAttribute("data-køn") == "k") {
-                        person.classList.remove("gem");
-                    } else {
-                        person.classList.add("gem");
-                    }
-                });
-            } else if (filter == "m") {
-                main.classList.add("to-spalter");
-                a.parentElement.classList.remove("gem");
-                b.parentElement.classList.remove("gem");
-                personer.forEach(person => {
-                    console.log(person);
-                    if (person.getAttribute("data-køn") == "m") {
-                        person.classList.remove("gem");
-                    } else {
-                        person.classList.add("gem");
-                    }
-                });
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
-            }
-        }
+                filter = this.getAttribute("hold");
+                knapper.forEach(knap => knap.classList.remove("aktiv"));
+                this.classList.add("aktiv");
+                if (filter == "alle") {
+                    main.classList.add("to-spalter");
+                    a.parentElement.classList.remove("gem");
+                    b.parentElement.classList.remove("gem");
+                    personer.forEach(person => person.classList.remove("gem"));
+                } else if (filter == "a") {
+                    main.classList.remove("to-spalter");
+                    a.parentElement.classList.remove("gem");
+                    b.parentElement.classList.add("gem");
+                } else if (filter == "b") {
+                    main.classList.remove("to-spalter");
+                    a.parentElement.classList.add("gem");
+                    b.parentElement.classList.remove("gem");
+                } else if (filter == "k") {
+                    main.classList.add("to-spalter");
+                    a.parentElement.classList.remove("gem");
+                    b.parentElement.classList.remove("gem");
+                    personer.forEach(person => {
+                        console.log(person);
+                        if (person.getAttribute("data-køn") == "k") {
+                            person.classList.remove("gem");
+                        } else {
+                            person.classList.add("gem");
+                        }
+                    });
+                } else if (filter == "m") {
+                    main.classList.add("to-spalter");
+                    a.parentElement.classList.remove("gem");
+                    b.parentElement.classList.remove("gem");
+                    personer.forEach(person => {
+                        console.log(person);
+                        if (person.getAttribute("data-køn") == "m") {
+                            person.classList.remove("gem");
+                        } else {
+                            person.classList.add("gem");
+                        }
+                    });
 
-        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
-
-        async function loadData() {
-            a.textContent = "";
-            b.textContent = "";
-            filter = "alle";
-            const response = await fetch(url);
-            json = await response.json();
-            vis(json);
-        }
-
-        function vis(data) {
-            console.log(data);
-            data.feed.entry.forEach(person => {
-<<<<<<< HEAD:hold_liste.html
-                const hold = person.gsx$hold.$t.toLowerCase();
-                if (hold == sortering || sortering == "alle") {
-                    const klon = skabelon.cloneNode(true);
-                    const navn = person.gsx$navn.$t;
-                    const køn = person.gsx$køn.$t.toLowerCase();
-                    const billede = person.gsx$billede.$t;
-                    klon.querySelector("article").setAttribute("data-koen", køn);
-=======
-                if (person.gsx$hold.$t.toLowerCase() == filter || filter == "alle") {
-                    const klon = skabelon.cloneNode(true);
-                    const navn = person.gsx$navn.$t;
-                    const hold = person.gsx$hold.$t.toLowerCase();
-                    const køn = person.gsx$køn.$t.toLowerCase();
-                    const billede = person.gsx$billede.$t;
-                    klon.querySelector(".person").setAttribute("data-køn", køn);
->>>>>>> Tema_7_E2019/master:hold_liste_filter_sorter.html
-                    klon.querySelector(".navn").textContent = navn;
-                    klon.querySelector(".holdet").textContent += hold.toUpperCase();
-                    klon.querySelector(".profil-billede").src = billede;
-                    if (hold == "a") {
-                        a.appendChild(klon);
-                    } else if (hold == "b") {
-                        b.appendChild(klon);
-                    } else {
-                        console.log(navn);
-                    }
                 }
-            })
-            personer = document.querySelectorAll(".person");
-        }
+            }
+
+            //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+            async function loadData() {
+                a.textContent = "";
+                b.textContent = "";
+                filter = "alle";
+                const response = await fetch(url);
+                json = await response.json();
+                vis(json);
+            }
+
+            function vis(data) {
+                console.log(data);
+                const hold = person.gsx$hold.$t.toLowerCase();
+                data.feed.entry.forEach(person => {
+                    if (hold == sortering || sortering == "alle") {
+                        const klon = skabelon.cloneNode(true);
+                        const navn = person.gsx$navn.$t;
+                        const køn = person.gsx$køn.$t.toLowerCase();
+                        const billede = person.gsx$billede.$t;
+                        klon.querySelector("article").setAttribute("data-koen", køn);
+                    }
+
+                    if (person.gsx$hold.$t.toLowerCase() == filter || filter == "alle") {
+                        const klon = skabelon.cloneNode(true);
+                        const navn = person.gsx$navn.$t;
+                        const hold = person.gsx$hold.$t.toLowerCase();
+                        const køn = person.gsx$køn.$t.toLowerCase();
+                        const billede = person.gsx$billede.$t;
+                        klon.querySelector(".person").setAttribute("data-køn", køn);
+
+                        klon.querySelector(".navn").textContent = navn;
+                        klon.querySelector(".holdet").textContent += hold.toUpperCase();
+                        klon.querySelector(".profil-billede").src = billede;
+                        if (hold == "a") {
+                            a.appendChild(klon);
+                        } else if (hold == "b") {
+                            b.appendChild(klon);
+                        } else {
+                            console.log(navn);
+                        }
+                    }
+
+                })
+
+                personer = document.querySelectorAll(".person");
+            }
     </script>
 </body></html>
