@@ -44,8 +44,8 @@
     </nav>
     <nav>
         <p>Sorter efter:
-            <button data-sortering="alder" class="sorter-knap">Alder</button>
-            <button data-sortering="navn" class="sorter-knap">Navn</button>
+            <button data-sortering="alder" data-retning="op" class="sorter-knap">Alder (Yngst først)</button>
+            <button data-sortering="navn" data-retning="op" class="sorter-knap">Navn (A-Z)</button>
         </p>
     </nav>
     <section id="liste"></section>
@@ -68,13 +68,15 @@
         let data;
         let filter = "alle";
         let sortering = "navn";
+        let aktuelt, retning;
 
         filterKnapper.forEach(knap => knap.addEventListener("click", filtrer));
         sorterKnapper.forEach(knap => knap.addEventListener("click", sorter));
 
         function filtrer() {
             filter = this.dataset.filter;
-            h1.textContent = this.textContent;
+            aktuelt = this.textContent;
+            h1.textContent = aktuelt;
             filterKnapper.forEach(knap => knap.classList.remove("valgt"));
             this.classList.add("valgt");
             vis(data);
@@ -82,13 +84,24 @@
 
         function sorter() {
             sortering = this.dataset.sortering;
+            retning = this.dataset.retning;
+            h1.textContent = aktuelt + " sorteret efter " + sortering;
             if (sortering == "alder") {
-                data.feed.entry.sort((a, b) => (a.gsx$alder.$t - b.gsx$alder.$t));
-            }else{
+                if (retning == "op") {
+                    data.feed.entry.sort((a, b) => (a.gsx$alder.$t - b.gsx$alder.$t));
+                    retning = "ned";
+                } else {
+                    data.feed.entry.sort((a, b) => (b.gsx$alder.$t - a.gsx$alder.$t));
+                    retning = "op";
+                }
+            } else {
                 data.feed.entry.sort((a, b) => (a.gsx$navn.$t.localeCompare(b.gsx$navn.$t)));
             }
+            sorterKnapper.forEach(knap => knap.classList.remove("valgt"));
+            this.classList.add("valgt");
             vis();
         }
+
         //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
 
         async function loadData() {
