@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        img {
+            width: 100%;
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .person {
+            padding: 1em;
+            border: 1px solid;
+        }
+
+        nav {
+            margin: .5em;
+        }
+
+        .valgt {
+            background-color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>MMD 2019</h1>
+    <nav>
+        <p>Filtrer liste:
+            <button data-filter="alle" class="filter-knap valgt">Alle</button>
+            <button data-filter="k" class="filter-knap">Kvinder</button>
+            <button data-filter="m" class="filter-knap">Mænd</button>
+            <button data-filter="andet" class="filter-knap">Andre</button>
+            <button data-filter="a" class="filter-knap">Hold A</button>
+            <button data-filter="b" class="filter-knap">Hold B</button>
+        </p>
+    </nav>
+    <nav>
+        <p>Sorter efter:
+            <button data-sortering="alder" data-retning="op" class="sorter-knap">Alder (Yngst først)</button>
+            <button data-sortering="navn" data-retning="op" class="sorter-knap">Navn (A-Z)</button>
+        </p>
+    </nav>
+    <section id="liste"></section>
+    <template>
+        <article class="person">
+            <h2 class="navn"></h2>
+            <img src="" alt="" class="profil-billede">
+            <p class="køn"></p>
+            <h3 class="hold">Hold </h3>
+        </article>
+    </template>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadData);
+
+        const sheetID = "1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const listeElm = document.querySelector("#liste");
+        const skabelon = document.querySelector("template").content;
+        const h1 = document.querySelector("h1");
+        const filterKnapper = document.querySelectorAll(".filter-knap");
+        const sorterKnapper = document.querySelectorAll(".sorter-knap");
+        let data;
+        let filter = ["alle"];
+        let sortering = "navn";
+        let aktuelt, retning;
+
+        filterKnapper.forEach(knap => knap.addEventListener("click", filtrer));
+        sorterKnapper.forEach(knap => knap.addEventListener("click", sorter));
+
+        function filtrer() {
+            aktuelt = this.textContent;
+            h1.textContent = aktuelt;
+            if (this.dataset.filter == "alle") {
+                filterKnapper.forEach(knap => knap.classList.remove("valgt"));
+                this.classList.add("valgt");
+                filter = ["alle"];
+            } else {
+                filterKnapper[0].classList.remove("valgt");
+                if (filter.includes("alle")) {
+                    filter.shift();
+            }
+            if (this.classList.contains("valgt")) {
+                this.classList.remove("valgt");
+                filter = filter.filter(item => item != this.dataset.filter); // filtrer det valgte filter fra filterlisten
+            } else {
+                this.classList.add("valgt");
+                filter.push(this.dataset.filter);
+            }
+        }
+        vis(data);
+        }
+
+        function sorter() {
+            sortering = this.dataset.sortering;
+            retning = this.dataset.retning;
+            h1.textContent = aktuelt + " sorteret efter " + sortering;
+            if (sortering == "alder") {
+                if (retning == "op") {
+                    data.feed.entry.sort((a, b) => (a.gsx$alder.$t - b.gsx$alder.$t));
+                    retning = "ned";
+                } else {
+                    data.feed.entry.sort((a, b) => (b.gsx$alder.$t - a.gsx$alder.$t));
+                    retning = "op";
+                }
+            } else {
+                data.feed.entry.sort((a, b) => (a.gsx$navn.$t.localeCompare(b.gsx$navn.$t)));
+            }
+            sorterKnapper.forEach(knap => knap.classList.remove("valgt"));
+            this.classList.add("valgt");
+            vis();
+        }
+
+        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+        async function loadData() {
+            const response = await fetch(url);
+            const json = await response.json();
+            data = json;
+            vis(json);
+        }
+
+        function vis() {
+            listeElm.textContent = "";
+            console.log(filter);
+            data.feed.entry.forEach(person => {
+                if (
+                    filter.includes(person.gsx$hold.$t.toLowerCase()) && filter.includes(person.gsx$køn.$t) ||
+                    filter.includes("alle") ||
+                    filter.includes(person.gsx$køn.$t) && !filter.includes("a") && !filter.includes("b")
+                ){
+                const klon = skabelon.cloneNode(true);
+                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
+                    klon.querySelector(".hold").textContent += " " + person.gsx$hold.$t;
+                    klon.querySelector(".køn").textContent += " " + person.gsx$køn.$t;
+                    klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
+                    listeElm.appendChild(klon);
+                }
+            })
+        }
+
+    </script>
+</body>
+
+</html>
