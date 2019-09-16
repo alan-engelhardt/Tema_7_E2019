@@ -87,16 +87,16 @@
                 filterKnapper[0].classList.remove("valgt");
                 if (filter.includes("alle")) {
                     filter.shift();
+                }
+                if (this.classList.contains("valgt")) {
+                    this.classList.remove("valgt");
+                    filter = filter.filter(item => item != this.dataset.filter); // filtrer det valgte filter fra filterlisten
+                } else {
+                    this.classList.add("valgt");
+                    filter.push(this.dataset.filter);
+                }
             }
-            if (this.classList.contains("valgt")) {
-                this.classList.remove("valgt");
-                filter = filter.filter(item => item != this.dataset.filter); // filtrer det valgte filter fra filterlisten
-            } else {
-                this.classList.add("valgt");
-                filter.push(this.dataset.filter);
-            }
-        }
-        vis(data);
+            vis(data);
         }
 
         function sorter() {
@@ -133,11 +133,12 @@
             console.log(filter);
             data.feed.entry.forEach(person => {
                 if (
-                    filter.includes(person.gsx$hold.$t.toLowerCase()) && filter.includes(person.gsx$køn.$t) ||
                     filter.includes("alle") ||
-                    filter.includes(person.gsx$køn.$t) && !filter.includes("a") && !filter.includes("b")
-                ){
-                const klon = skabelon.cloneNode(true);
+                    filter.includes(person.gsx$hold.$t.toLowerCase()) && filter.includes(person.gsx$køn.$t) ||
+                    filter.includes(person.gsx$køn.$t) && !filter.includes("a") && !filter.includes("b") ||
+                    filter.includes(person.gsx$hold.$t) && !filter.includes("m") && !filter.includes("k") && !filter.includes("andet")
+                ) {
+                    const klon = skabelon.cloneNode(true);
                     klon.querySelector(".navn").textContent = person.gsx$navn.$t;
                     klon.querySelector(".hold").textContent += " " + person.gsx$hold.$t;
                     klon.querySelector(".køn").textContent += " " + person.gsx$køn.$t;
