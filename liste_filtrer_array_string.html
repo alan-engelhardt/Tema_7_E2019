@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        img {
+            width: 100%;
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .person {
+            padding: 1em;
+            border: 1px solid;
+        }
+
+        nav {
+            padding: 1em;
+        }
+
+        button {
+            margin: .5em;
+            background-color: beige;
+        }
+
+        ul {
+            padding: 0 1em;
+        }
+
+        .valgt {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>MMD 2019</h1>
+    <nav>
+        <button data-filter="alle" class="valgt">Alle</button>
+    </nav>
+    <section id="liste"></section>
+    <template>
+        <article class="person">
+            <h2 class="navn"></h2>
+            <img src="" alt="" class="profil-billede">
+            <p>Interesser</p>
+            <ul class="interesser"></ul>
+        </article>
+    </template>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadData);
+
+        const sheetID = "1JGPYMnB6ClVWWvjsMkosSDg6IJsutNDrZEkjvhP_jKM";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const listeElm = document.querySelector("#liste");
+        const skabelon = document.querySelector("template").content;
+        const h1 = document.querySelector("h1");
+        const nav = document.querySelector("nav");
+        const alleKnap = document.querySelector("nav button");
+
+        let data;
+        let filtre = ["alle"];
+        let intArray = [];
+        let filterKnapper = [];
+
+        alleKnap.addEventListener("click", filtrer);
+        filterKnapper.push(alleKnap);
+
+        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+
+        async function loadData() {
+            const response = await fetch(url);
+            data = await response.json();
+            bygMenu(data);
+            //vis(data);
+        }
+
+        function bygMenu(data) {
+            let knapArray = []
+            data.feed.entry.forEach(person => {
+                const tmp = person.gsx$interesser.$t.split(", ");
+                knapArray = [...new Set([...knapArray, ...tmp])]; // fletter unikke værdier ind i knapArray
+            })
+            knapArray.forEach(interesse => {
+                const nyknap = document.createElement("button");
+                nyknap.textContent = interesse;
+                nyknap.dataset.filter = interesse;
+                nyknap.addEventListener("click", filtrer);
+                filterKnapper.push(nyknap);
+                nav.appendChild(nyknap);
+            })
+            vis(data);
+        }
+
+        function filtrer() {
+            aktuelt = this.textContent;
+            h1.textContent = aktuelt;
+            if (this.dataset.filter == "alle") {
+                filterKnapper.forEach(knap => knap.classList.remove("valgt"));
+                this.classList.add("valgt");
+                filtre = ["alle"];
+            } else {
+                filterKnapper[0].classList.remove("valgt");
+                if (filtre.includes("alle")) {
+                    filtre.shift();
+                }
+                if (this.classList.contains("valgt")) {
+                    this.classList.remove("valgt");
+                    filtre = filtre.filter(item => item != this.dataset.filter); // filtrer det valgte filter fra filterlisten
+                } else {
+                    this.classList.add("valgt");
+                    filtre.push(this.dataset.filter);
+                }
+            }
+            vis(data);
+        }
+
+        function vis(data) {
+            listeElm.textContent = "";
+            data.feed.entry.forEach(person => {
+                let i = 0;
+                filtre.forEach((filter)=> {
+                    if (person.gsx$interesser.$t.includes(filter) || filter == "alle") {
+                        i++
+                        if (i == filtre.length) { // kun hvis en person har alle valgte interesser
+                            udfyldArticle(person);
+                        }
+                    }
+                })
+            })
+        }
+
+        function udfyldArticle(person) {
+            const klon = skabelon.cloneNode(true);
+            const navn = person.gsx$fornavn.$t;
+            const billede = person.gsx$billede.$t;
+            const intListe = klon.querySelector("ul");
+            const intArray = person.gsx$interesser.$t.split(", ")
+            intArray.forEach(int => {
+                const nyLi = document.createElement("li");
+                nyLi.textContent = int;
+                intListe.appendChild(nyLi);
+            })
+
+            klon.querySelector(".navn").textContent = navn;
+            klon.querySelector(".profil-billede").src = billede;
+            listeElm.appendChild(klon);
+        }
+
+        /*
+        function onlyUnique(value, index, self) {
+                    return self.indexOf(value) === index;
+                }
+        */
+    </script>
+</body></html>
