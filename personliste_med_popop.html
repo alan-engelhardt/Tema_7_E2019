@@ -38,7 +38,7 @@
             margin: 2em 5em;
         }
 
-        #luk{
+        #luk {
             margin: 1em;
         }
 
@@ -55,7 +55,9 @@
         <button data-køn="k">Kvinder</button>
         <button data-køn="m">Mænd</button>
         <button data-køn="andet">Andet</button>
+        <button data-køn="random" id="random">Tilfældig</button>
     </nav>
+
 
     <section id="liste"></section>
 
@@ -80,6 +82,7 @@
         const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
         let personer;
         let filter = "alle";
+        let antal;
         const popop = document.querySelector("#detaljer");
 
         // første funktion der kaldes efter DOM er loaded
@@ -93,10 +96,12 @@
 
         // funktion der filtrerer personer (json)
         function filtrerPersoner() {
+
             filter = this.dataset.køn; // sæt variabel "filter" til aktuel værdi
             document.querySelector(".valgt").classList.remove("valgt"); // fjern klassen valgt fra aktuel knap
             this.classList.add("valgt") // marker den nyvalgte knap
             vis(); // kald funktionen vis igen med nyt filter
+
         }
 
         // funktion der henter data fra Google sheet (via url)
@@ -108,9 +113,22 @@
 
         //funktion der viser personer i liste view
         function vis() {
+            antal = personer.feed.entry.length;
             const dest = document.querySelector("#liste"); // container til articles med en person
             const skabelon = document.querySelector("template").content; // select indhold af html skabelon (article)
             dest.textContent = "";
+            if (filter == "random") {
+                const randomTal = Math.floor(Math.random() * antal);
+                const person = personer.feed.entry[randomTal];
+
+                    const klon = skabelon.cloneNode(true);
+                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
+                    klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
+                    klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
+                    klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
+                    dest.appendChild(klon);
+
+            }
             personer.feed.entry.forEach(person => { // loop igennem json (personer)
                 // tjek hvilket køn personen har og sammenlign med aktuelt filter eller vis alle, hvis filter har værdien "alle"
                 if (person.gsx$køn.$t == filter || filter == "alle") {
