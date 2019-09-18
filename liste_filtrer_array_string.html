@@ -42,7 +42,7 @@
 <body>
     <h1>MMD 2019</h1>
     <nav>
-        <button data-filter="alle" class="valgt">Alle</button>
+        <button data-filter="alle" class="valgt" id="alleKnap">Alle</button>
     </nav>
     <section id="liste"></section>
     <template>
@@ -62,7 +62,7 @@
         const skabelon = document.querySelector("template").content;
         const h1 = document.querySelector("h1");
         const nav = document.querySelector("nav");
-        const alleKnap = document.querySelector("nav button");
+        const alleKnap = document.querySelector("#alleKnap");
 
         let data;
         let filtre = ["alle"];
@@ -80,39 +80,38 @@
             //visListe(data);
         }
 
+        // tilføj en knap til menuen for hver ny interesse de findes blandt alle personer i regnearket
         function bygMenu(data) {
-            let knapArray = []
-            data.feed.entry.forEach(person => {
-                const tmp = person.gsx$interesser.$t.split(", ");
-                knapArray = [...new Set([...knapArray, ...tmp])]; // fletter unikke værdier ind i knapArray
+            let interesseArray = [] // tomt array til at holde interesserne
+            data.feed.entry.forEach(person => { // find hver persons interesser
+                const tmp = person.gsx$interesser.$t.split(", "); // gem hver interesse i et midlertidigt array
+                interesseArray = [...new Set([...interesseArray, ...tmp])]; // flet unikke værdier ind i interesseArray fra det midlertidige array
             })
-            knapArray.forEach(interesse => {
+            interesseArray.forEach(interesse => { // lav en knap for hver (unik) interesse
                 const nyknap = document.createElement("button");
                 nyknap.textContent = interesse;
                 nyknap.dataset.filter = interesse;
                 nyknap.addEventListener("click", filtrer);
-                filterKnapper.push(nyknap);
-                nav.appendChild(nyknap);
+                filterKnapper.push(nyknap); // tilføj hver ny knap til filterKnapper array
+                nav.appendChild(nyknap); // tilføj  hver ny knap til DOM i <nav>
             })
-            visListe(data);
+            visListe(data); // vis hele personlisten
         }
 
         function filtrer() {
-            if (this.dataset.filter == "alle") {
+            if (this.dataset.filter == "alle") { // hvis der er trykket på "alle" knasppen, slet de andre filtre
                 filterKnapper.forEach(knap => knap.classList.remove("valgt"));
                 this.classList.add("valgt");
                 filtre = ["alle"];
-            } else {
-                filterKnapper[0].classList.remove("valgt");
-                if (filtre.includes("alle")) {
-                    filtre.shift();
-                }
-                if (this.classList.contains("valgt")) {
-                    this.classList.remove("valgt");
-                    filtre = filtre.filter(item => item != this.dataset.filter); // filtrer det valgte filter fra filterlisten
+            } else { // hvis der er trykket på en anden knap end "alle"
+                filtre = filtre.filter(elm => elm != "alle"); // fjern "alle" fra filter-array'et
+                filterKnapper[0].classList.remove("valgt"); // fjern markering fra "alle" knappen
+                if (this.classList.contains("valgt")) { // hvis denne knap allerede er markeret
+                    this.classList.remove("valgt"); // fjern markering fra denne knappen
+                    filtre = filtre.filter(item => item != this.dataset.filter); // fjern dette filter fra filter-array'et
                 } else {
-                    this.classList.add("valgt");
-                    filtre.push(this.dataset.filter);
+                    this.classList.add("valgt"); // marker denne knap
+                    filtre.push(this.dataset.filter); // tilføj dette filter til filter-array'et
                 }
             }
             visListe(data);
@@ -120,20 +119,21 @@
 
         function visListe(data) {
             listeElm.textContent = "";
-            h1.textContent = filtre.toString();
+            h1.textContent = filtre.toString(); // vis de aktive filtre i overskriften
             data.feed.entry.forEach(person => {
                 let i = 0;
-                filtre.forEach((filter)=> {
+                filtre.forEach((filter) => { // for hvert hver aktivt filter, tjek om personen deler denne interesse
                     if (person.gsx$interesser.$t.includes(filter) || filter == "alle") {
-                        i++
-                        if (i == filtre.length) { // kun hvis en person har alle de valgte interesser
-                            udfyldArticle(person);
+                        i++ // tæl hvor mange af de aktive filtrer (interesser) personen deler
+                        if (i == filtre.length) { // vis kun hvis en personen deler alle de valgte interesser
+                            udfyldArticle(person); // tilføj personen til listen
                         }
                     }
                 })
             })
         }
 
+        // funktion til at vise en person og tilføje denne til listen
         function udfyldArticle(person) {
             const klon = skabelon.cloneNode(true);
             const navn = person.gsx$fornavn.$t;
@@ -143,8 +143,8 @@
             intArray.forEach(int => {
                 const nyLi = document.createElement("li");
                 nyLi.textContent = int;
-                if(filtre.includes(int)){
-                    nyLi.style.color="red";
+                if (filtre.includes(int)) {
+                    nyLi.style.color = "red";
                 }
                 intListe.appendChild(nyLi);
             })
@@ -153,11 +153,5 @@
             klon.querySelector(".profil-billede").src = billede;
             listeElm.appendChild(klon);
         }
-
-        /*
-        function onlyUnique(value, index, self) {
-                    return self.indexOf(value) === index;
-                }
-        */
     </script>
 </body></html>
