@@ -124,8 +124,8 @@
                 let i = 0;
                 filtre.forEach((filter) => { // for hvert hver aktivt filter, tjek om personen deler denne interesse
                     if (person.gsx$interesser.$t.includes(filter) || filter == "alle") {
-                        i++ // tæl hvor mange af de aktive filtrer (interesser) personen deler
-                        if (i == filtre.length) { // vis kun hvis en personen deler alle de valgte interesser
+                        i++ // tæl hvor mange af de aktive interesser (gemt i filtre) personen deler
+                        if (i == filtre.length) { // kun hvis en personen deler alle de valgte interesser (i filtre)
                             udfyldArticle(person); // tilføj personen til listen
                         }
                     }
