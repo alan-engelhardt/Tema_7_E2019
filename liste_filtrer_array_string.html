@@ -66,19 +66,18 @@
 
         let data;
         let filtre = ["alle"];
-        let intArray = [];
         let filterKnapper = [];
 
         alleKnap.addEventListener("click", filtrer);
         filterKnapper.push(alleKnap);
 
-        //alternativt: fetch(url).then(response=>response.json()).then(json=>vis(json));
+        //alternativt: fetch(url).then(response=>response.json()).then(json=>visListe(json));
 
         async function loadData() {
             const response = await fetch(url);
             data = await response.json();
             bygMenu(data);
-            //vis(data);
+            //visListe(data);
         }
 
         function bygMenu(data) {
@@ -95,12 +94,10 @@
                 filterKnapper.push(nyknap);
                 nav.appendChild(nyknap);
             })
-            vis(data);
+            visListe(data);
         }
 
         function filtrer() {
-            aktuelt = this.textContent;
-            h1.textContent = aktuelt;
             if (this.dataset.filter == "alle") {
                 filterKnapper.forEach(knap => knap.classList.remove("valgt"));
                 this.classList.add("valgt");
@@ -118,17 +115,18 @@
                     filtre.push(this.dataset.filter);
                 }
             }
-            vis(data);
+            visListe(data);
         }
 
-        function vis(data) {
+        function visListe(data) {
             listeElm.textContent = "";
+            h1.textContent = filtre.toString();
             data.feed.entry.forEach(person => {
                 let i = 0;
                 filtre.forEach((filter)=> {
                     if (person.gsx$interesser.$t.includes(filter) || filter == "alle") {
                         i++
-                        if (i == filtre.length) { // kun hvis en person har alle valgte interesser
+                        if (i == filtre.length) { // kun hvis en person har alle de valgte interesser
                             udfyldArticle(person);
                         }
                     }
@@ -145,6 +143,9 @@
             intArray.forEach(int => {
                 const nyLi = document.createElement("li");
                 nyLi.textContent = int;
+                if(filtre.includes(int)){
+                    nyLi.style.color="red";
+                }
                 intListe.appendChild(nyLi);
             })
 
