@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find en ret</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 300px);
+            grid-gap: 1em;
+        }
+
+        .ret {
+            padding: 1em;
+            background-color: orange;
+            color: white;
+            border-radius: .5em;
+        }
+
+        #lede-sektion {
+            padding: 1em;
+        }
+
+        img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Find en ret</h1>
+    <section id="lede-sektion">
+        <input type="text" placeholder="skriv søgeord" id="lede-tekst">
+        <button id="lede-knap">Søg</button>
+        <button id="alle-knap">Vis alle</button> <span id="antal">0</span>
+    </section>
+
+    <main id="liste"></main>
+
+    <template>
+        <article class="ret">
+            <h2>Navn</h2>
+            <img src="" alt="">
+            <p class="beskrivelse">Besskrivelse</p>
+            <p class="oprindelse">Oprindelsesregion</p>
+        </article>
+    </template>
+    <script>
+        //id kategori relaterede navn pris udsolgt rabatsats kortBeskrivelse langBeskrivelse oprindelsesregion vegetar allergener alkoholprocent billede billedtekst stjerner
+
+        document.addEventListener("DOMContentLoaded", loadData);
+
+        const sheetID = "1fQ8LWZH9Fy8otZjDSmCkAaqFDdHUVKOIus2FvSvKHao";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        const liste = document.querySelector("#liste");
+        const ledeTekstFelt = document.querySelector("#lede-tekst");
+        const ledeKnap = document.querySelector("#lede-knap");
+        const alleKnap = document.querySelector("#alle-knap");
+        const antalVis = document.querySelector("#antal");
+        const skabelon = document.querySelector("template").content;
+        let data, ledeTekst;
+
+        ledeKnap.addEventListener("click", ledEfterTekst);
+
+        alleKnap.addEventListener("click", () => {
+            ledeTekst = undefined; // hvis "vis alle" knappen er klikket nulstilles søgeteksten
+            show(data);
+        });
+
+        function ledEfterTekst() {
+            const tmp = ledeTekstFelt.value; // hvad strår der i input feltetr?
+            ledeTekst = tmp.toLowerCase(); // lav alt om til bogstaver
+            show(data);
+        }
+
+        function loadData() {
+            fetch(url).then(e => e.json().then(json => {
+                data = json;
+                show(data);
+            }));
+        }
+
+        function show(data) {
+            liste.textContent = "";
+            let antal = 0
+            data.feed.entry.forEach(ret => {
+                const navn = ret.gsx$navn.$t; // først rettes al tekst til små bogstaver...
+                const navnLille = navn.toLowerCase();
+                const beskrivelse = ret.gsx$kortbeskrivelse.$t;
+                const beskLille = beskrivelse.toLowerCase();
+                const region = ret.gsx$oprindelsesregion.$t;
+                const regionLille = region.toLowerCase();
+                const kategori = ret.gsx$kategori.$t;
+                const kategoriLille = kategori.toLowerCase();
+
+                const tmp = regionLille.search(ledeTekst);
+                console.log(tmp);
+                if (ledeTekst == undefined || // derefter ledes der efter søgeteksten i 4 felter (navn, beskrivelse osv.)
+                    navnLille.includes(ledeTekst) ||
+                    regionLille.includes(ledeTekst) ||
+                    beskLille.includes(ledeTekst) ||
+                    kategoriLille.search(ledeTekst) != -1 // (alternativ metode)
+                    //kategoriLille.includes(ledeTekst)
+                ) {
+                    antal++ // tæl hvor mange retter der matcher søgeteksten
+                    const klon = skabelon.cloneNode(true);
+                    klon.querySelector("h2").textContent = navn;
+                    klon.querySelector("img").src = `http://ale-kea.dk/api/images/small/${ret.gsx$billede.$t}-sm.jpg`;
+                    klon.querySelector("img").alt = ret.gsx$billede.$t;
+                    klon.querySelector(".beskrivelse").textContent = beskrivelse;
+                    klon.querySelector(".oprindelse").textContent = region;
+                    liste.appendChild(klon);
+                }
+            })
+            antalVis.textContent = antal; // vis hvor mange retter der matchede
+        }
+    </script>
+</body></html>
+
+
+
+
+
+
+
+
+
+
+
+
