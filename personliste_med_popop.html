@@ -13,6 +13,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
+            padding: 1em 0;
         }
 
         .person {
@@ -49,13 +50,12 @@
 </head>
 
 <body>
-    <h1>MMD 2019</h1>
+    <h1>MMD 2020</h1>
     <nav>
         <button data-køn="alle" class="valgt">Alle</button>
         <button data-køn="k">Kvinder</button>
         <button data-køn="m">Mænd</button>
         <button data-køn="andet">Andet</button>
-        <button data-køn="random" id="random">Tilfældig</button>
     </nav>
 
 
@@ -64,6 +64,7 @@
     <template>
         <article class="person">
             <h2 class="navn"></h2>
+            <p class="køn"></p>
             <img src="" alt="" class="profil-billede">
         </article>
     </template>
@@ -79,7 +80,10 @@
     <script>
         document.addEventListener("DOMContentLoaded", start);
 
-        const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
+        const id = "1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0"; // fiktive personer T7 F20202
+        const url = `https://spreadsheets.google.com/feeds/list/${id}/od6/public/values?alt=json`;
+
+        //const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
         let personer;
         let filter = "alle";
         let antal;
@@ -96,7 +100,6 @@
 
         // funktion der filtrerer personer (json)
         function filtrerPersoner() {
-
             filter = this.dataset.køn; // sæt variabel "filter" til aktuel værdi
             document.querySelector(".valgt").classList.remove("valgt"); // fjern klassen valgt fra aktuel knap
             this.classList.add("valgt") // marker den nyvalgte knap
@@ -116,25 +119,12 @@
             antal = personer.feed.entry.length;
             const dest = document.querySelector("#liste"); // container til articles med en person
             const skabelon = document.querySelector("template").content; // select indhold af html skabelon (article)
-            dest.textContent = "";
-            if (filter == "random") {
-                const randomTal = Math.floor(Math.random() * antal);
-                const person = personer.feed.entry[randomTal];
-
-                    const klon = skabelon.cloneNode(true);
-                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
-                    klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
-                    klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
-                    klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
-                    dest.appendChild(klon);
-
-            }
+            dest.textContent = ""; // ryd container inden ny loop
             personer.feed.entry.forEach(person => { // loop igennem json (personer)
                 // tjek hvilket køn personen har og sammenlign med aktuelt filter eller vis alle, hvis filter har værdien "alle"
-                if (person.gsx$køn.$t == filter || filter == "alle") {
+                if (person.gsx$sex.$t == filter || filter == "alle") {
                     const klon = skabelon.cloneNode(true);
-                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
-                    klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
+                    klon.querySelector(".navn").textContent = person.gsx$id.$t + " " + person.gsx$navn.$t;
                     klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
                     klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
                     dest.appendChild(klon);
@@ -146,7 +136,7 @@
             popop.classList.remove("skjul");
             console.log(person)
             popop.querySelector(".navn").textContent = person.gsx$navn.$t;
-            popop.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
+            popop.querySelector(".navn").textContent += " " + person.gsx$alder.$t;
             popop.querySelector(".profil-billede").src = person.gsx$billede.$t;
         }
 
