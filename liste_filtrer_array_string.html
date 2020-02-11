@@ -85,7 +85,7 @@
             let interesseArray = [] // tomt array til at holde interesserne
             data.feed.entry.forEach(person => { // find hver persons interesser
                 const tmp = person.gsx$interesser.$t.split(", "); // gem hver interesse i et midlertidigt array
-                interesseArray = [...new Set([...interesseArray, ...tmp])]; // flet unikke værdier ind i interesseArray fra det midlertidige array
+                interesseArray = [...new Set([...interesseArray, ...tmp])]; // flet unikke værdier fra det midlertidige array ind i interesseArray
             })
             interesseArray.forEach(interesse => { // lav en knap for hver (unik) interesse
                 const nyknap = document.createElement("button");
@@ -99,7 +99,7 @@
         }
 
         function filtrer() {
-            if (this.dataset.filter == "alle") { // hvis der er trykket på "alle" knasppen, slet de andre filtre
+            if (this.dataset.filter == "alle") { // hvis der er trykket på "alle" knappen, slet de andre filtre
                 filterKnapper.forEach(knap => knap.classList.remove("valgt"));
                 this.classList.add("valgt");
                 filtre = ["alle"];

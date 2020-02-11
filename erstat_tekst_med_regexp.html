@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>T</title>
+</head>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptates mollitia eum minus autem placeat, pariatur dignissimos voluptatem, aut. Iste quidem qui id UM in, laudantium quibusdam nam ex nostrum totam!</p>
+
+<p id="tekst"></p>
+
+<body>
+    <script>
+        let erGalDræberRobot = false;
+
+        function interagerMedMennesker() {
+            if (erGalDræberRobot = true) {
+                console.log("dræb dem!");
+            } else {
+                console.log("Vær sød og rar");
+            }
+        }
+
+        interagerMedMennesker()
+
+        var ages = [32, 33, 16, 40];
+
+        console.log(ages.filter(age => age >= 18));
+
+        const string = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptates mollitia eum minus autem placeat, pariatur dignissimos voluptatem, aut. Iste quidem qui id UM in, laudantium quibusdam nam ex nostrum totam!";
+
+        //const ny = string.replace(/um/g, "<span style=background-color:orange>um</span>");
+
+        //let re = new RegExp(/um/g);
+
+        let flag = "gi" // g = find alle, i = både store og små bogstaver
+        let replace = "um";
+        let reg = new RegExp(replace, flag);
+
+        const fundet = string.replace(reg,  "<span style=background-color:orange>"+replace+"</span>");
+
+        console.log(fundet);
+
+        tekst.innerHTML = fundet;
+    </script>
+</body></html>

@@ -1,23 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>T</title>
-</head>
-<body>
-    <script>
-
-        let erGalDræberRobot = false;
-
-        function interagerMedMennesker(){
-            if(erGalDræberRobot = true){
-                console.log("dræb dem!");
-            }else{
-                console.log("Vær sød og rar");
-            }
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
         }
 
-        interagerMedMennesker()
+        img {
+            max-width: 100%;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 1em;
+            padding: 1em;
+        }
+
+        nav {
+            margin: .5em 0;
+        }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: hsla(0, 0%, 0%, .7);
+        }
+
+        #details{
+            margin: 3em;
+            position: relative;
+            background: hsla(0, 0%, 100%, .9);
+            padding: 2em;
+        }
+        .hide{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1><span id="header">Alle</span><span id="header-alder"></span></h1>
+    <nav>
+        <button class="genderBtn valgt" data-sex="alle">Alle</button>
+        <button class="genderBtn" data-sex="m">Mænd</button>
+        <button class="genderBtn" data-sex="k">Kvinder</button>
+        <button class="genderBtn" data-sex="andet">Andre</button>
+    </nav>
+    <button id="visOverBtn">Vis dem over</button>
+    <input type="number" id="mindste-alder" placeholder="skriv alder">
+    <main id="main"></main>
+
+    <article id="popup" class="hide">
+        <section id="details">
+            <h1>NAVN</h1>
+            <p>HOBBY</p>
+            <img src="" alt="BILLEDE">
+        </section>
+    </article>
+
+    <script>
+        //const id = "1MHKENQiaSzPmf6vWcjvy5kJDICamx4cfjzPhwjOOGI8"; // mit eget lille hold
+        const id = "1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0"; // fiktive personer T7
+        const googleSheet = `https://spreadsheets.google.com/feeds/list/${id}/od6/public/values?alt=json`;
+        const genderBtns = document.querySelectorAll(".genderBtn");
+        const alderBtn = document.querySelector("#visOverBtn");
+        const alderInput = document.querySelector("#mindste-alder");
+        const h1 = document.querySelector("h1");
+        let data = [];
+        let køn = "alle";
+        let alder = 0;
+
+        genderBtns.forEach(btn => btn.addEventListener("click", visGender));
+
+        function visGender() {
+            h1.querySelector("#header").textContent = this.textContent;
+            køn = this.dataset.sex;
+            show();
+        }
+
+        alderBtn.addEventListener("click", visDemOver);
+
+        function visDemOver() {
+            h1.querySelector("#header-alder").textContent = " over " + alderInput.value;
+            console.log(alderInput.value);
+            alder = parseInt(alderInput.value);
+            show();
+        }
+
+        hent();
+        // fetch(googleSheet).then(e=>e.json()).then(data=>vis(data));
+
+        async function hent() {
+            const response = await fetch(googleSheet);
+            data = await response.json();
+            show();
+        }
+
+        function show() {
+            main.textContent = "";
+            data.feed.entry.forEach(entry => {
+                if ((køn == "alle" || køn == entry.gsx$sex.$t) && (entry.gsx$alder.$t > alder)) {
+                    const article = document.createElement("article");
+                    const img = document.createElement("img");
+                    const h3 = document.createElement("h3");
+                    const p1 = document.createElement("p");
+                    const p2 = document.createElement("p");
+                    img.src = entry.gsx$billede.$t;
+                    h3.textContent = entry.gsx$navn.$t;
+                    p1.textContent = "Køn: " + entry.gsx$sex.$t;
+                    p2.textContent = "Alder: " + entry.gsx$alder.$t;
+                    article.appendChild(h3);
+                    article.appendChild(p1);
+                    article.appendChild(p2);
+                    article.appendChild(img);
+                    main.appendChild(article);
+                }
+            });
+        }
     </script>
-</body>
-</html>
+</body></html>
