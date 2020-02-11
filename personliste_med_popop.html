@@ -5,59 +5,73 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+        body {
+            font-family: sans-serif;
+        }
+
         img {
             width: 100%;
         }
 
+        header {
+            margin-left: 2em;
+        }
+        button{
+            cursor: pointer;
+        }
         #liste {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 1em;
-            padding: 1em 0;
+            margin: 2em;
         }
 
         .person {
             padding: 1em;
             border: 1px solid;
+            border-radius: 1em;
+            cursor: pointer;
         }
 
         .valgt {
             background-color: red;
         }
 
-        #detaljer {
+        #detalje {
             position: fixed;
+            top: 0;
             width: 100vw;
             height: 100vh;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, .8);
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            overflow: scroll;
         }
-
-        #detaljer article {
+        #detalje button{
+            font-size: 2em;
+            margin: .5em;
+        }
+        #person{
+            margin: 3em;
+            padding: 2em;
             background-color: white;
-            margin: 2em 5em;
         }
-
-        #luk {
-            margin: 1em;
-        }
-
-        .skjul {
+        .skjul{
             display: none;
         }
     </style>
 </head>
 
 <body>
-    <h1>MMD 2020</h1>
-    <nav>
-        <button data-køn="alle" class="valgt">Alle</button>
-        <button data-køn="k">Kvinder</button>
-        <button data-køn="m">Mænd</button>
-        <button data-køn="andet">Andet</button>
-    </nav>
+    <header>
+        <h1>Alle</h1>
 
+        <nav>
+            <button data-køn="alle" class="valgt">Alle</button>
+            <button data-køn="k">Kvinder</button>
+            <button data-køn="m">Mænd</button>
+            <button data-køn="andet">Andet</button>
+        </nav>
+    </header>
 
     <section id="liste"></section>
 
@@ -69,31 +83,32 @@
         </article>
     </template>
 
-    <section id="detaljer" class="skjul">
-        <button id="luk">X</button>
-        <article>
-            <h2 class="navn">Navn</h2>
-            <img src="http://ale-kea.dk/images/alan_thumb.JPG" alt="" class="profil-billede">
+    <section id="detalje" class="skjul">
+           <button>X</button>
+        <article id="person">
+            <h1>NAVN</h1>
+            <img>
+            <p>RELIGION</p>
+            <p>HOBBY</p>
         </article>
     </section>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", start);
 
         const id = "1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0"; // fiktive personer T7 F20202
         const url = `https://spreadsheets.google.com/feeds/list/${id}/od6/public/values?alt=json`;
+        const header = document.querySelector("header h1");
+        const detalje = document.querySelector("#detalje");
 
-        //const url = `https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json`;
         let personer;
         let filter = "alle";
         let antal;
-        const popop = document.querySelector("#detaljer");
 
         // første funktion der kaldes efter DOM er loaded
         function start() {
             const filterKnapper = document.querySelectorAll("nav button");
-            const lukKnap = document.querySelector("#detaljer button");
-            lukKnap.addEventListener("click", skjulPopop);
             filterKnapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
             loadData();
         }
@@ -103,46 +118,50 @@
             filter = this.dataset.køn; // sæt variabel "filter" til aktuel værdi
             document.querySelector(".valgt").classList.remove("valgt"); // fjern klassen valgt fra aktuel knap
             this.classList.add("valgt") // marker den nyvalgte knap
-            vis(); // kald funktionen vis igen med nyt filter
-
+            visPersoner(); // kald funktionen vis igen med nyt filter
+            header.textContent = this.textContent;
         }
 
         // funktion der henter data fra Google sheet (via url)
         async function loadData() {
             const response = await fetch(url);
             personer = await response.json();
-            vis();
+            visPersoner();
         }
 
         //funktion der viser personer i liste view
-        function vis() {
+        function visPersoner() {
             antal = personer.feed.entry.length;
             const dest = document.querySelector("#liste"); // container til articles med en person
             const skabelon = document.querySelector("template").content; // select indhold af html skabelon (article)
             dest.textContent = ""; // ryd container inden ny loop
-            personer.feed.entry.forEach(person => { // loop igennem json (personer)
+            personer.feed.entry.forEach(person => {
+                // loop igennem json (personer)
                 // tjek hvilket køn personen har og sammenlign med aktuelt filter eller vis alle, hvis filter har værdien "alle"
                 if (person.gsx$sex.$t == filter || filter == "alle") {
                     const klon = skabelon.cloneNode(true);
                     klon.querySelector(".navn").textContent = person.gsx$id.$t + " " + person.gsx$navn.$t;
                     klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
-                    klon.querySelector(".person").addEventListener("click", () => visDetaljer(person));
+                    klon.querySelector(".person").addEventListener("click", function(){
+                        visDetalje(person);
+                    });
                     dest.appendChild(klon);
                 }
             })
         }
 
-        function visDetaljer(person) {
-            popop.classList.remove("skjul");
-            console.log(person)
-            popop.querySelector(".navn").textContent = person.gsx$navn.$t;
-            popop.querySelector(".navn").textContent += " " + person.gsx$alder.$t;
-            popop.querySelector(".profil-billede").src = person.gsx$billede.$t;
+        function visDetalje(person){
+            detalje.classList.remove("skjul");
+            detalje.querySelector("button").addEventListener("click", ()=>detalje.classList.add("skjul"));
+            console.log(person.gsx$navn.$t);
+            detalje.querySelector("h1").textContent = person.gsx$navn.$t;
+            detalje.querySelector("p").textContent = "Religion: " + person.gsx$religion.$t;
+            detalje.querySelector("p + p").textContent = "Hobby: " + person.gsx$hobby.$t;
+            detalje.querySelector("img").src = person.gsx$billede.$t;
+            detalje.querySelector("img").alt = "Portræt af " + person.gsx$navn.$t + person.gsx$efternavn.$t;
         }
 
-        function skjulPopop() {
-            popop.classList.add("skjul");
-        }
+
     </script>
 </body></html>
 
